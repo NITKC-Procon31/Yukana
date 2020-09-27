@@ -1,0 +1,19 @@
+{
+    "name": "procon31/yukana",
+    "description": "A server software for IroMikke in PHP",
+    "type": "project",
+    "authors": [
+        {
+            "name": "towa0131",
+            "email": "towa.towa0131@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "yukana\\DingDong\\packets\\": "packets/",
+            "yukana\\DingDong\\utils\\": "utils/",
+            "yukana\\DingDong\\network\\": "network/"
+        }
+    }
+}
