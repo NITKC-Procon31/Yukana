@@ -18,22 +18,29 @@
 
 ## データ部
 > **DataPacket I**
+
+### データの長さ (Unsigned Int 16)
+- 259 (offset = 5)
+
 ### Packet ID (Unsigned Int 8)
-- 0x01 (offset = 5)
+- 0x01 (offset = 7)
 
 ### Buffer の長さ (Unsigned Int 16)
-- 256 (offset = 6)
+- 256 (offset = 8)
 
 ### Buffer
-- 様々なデータ (offset = 8 ~ 264)
+- 様々なデータ (offset = 10 ~ 266)
 
 > **DataPacket II**
 
+### データの長さ (Unsigned Int 16)
+- 103 (offset = 267)
+
 ### Packet ID (Unsigned Int 8)
-- 0x01 (offset = 265)
+- 0x01 (offset = 269)
 
 ### Buffer の長さ (Unsigned Int 16)
-- 100 (offset = 266)
+- 100 (offset = 270)
 
 ### Buffer
-- 様々なデータ (offset = 268 ~ 368)
+- 様々なデータ (offset = 272 ~ 372)
