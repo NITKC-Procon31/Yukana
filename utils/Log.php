@@ -57,6 +57,6 @@ class Log
              " \ \_/ /   _| | ____ _ _ __   __ _ " . PHP_EOL .
              "  \   / | | | |/ / _` | '_ \ / _` |" . self::COLOR_YELLOW . "    by" . self::FORMAT_RESET . PHP_EOL .
              "   | || |_| |   < (_| | | | | (_| |" . self::COLOR_YELLOW . "       NIT, Kumamoto College, Procon31 " . self::FORMAT_RESET .PHP_EOL .
-             "   |_| \__,_|_|\_\__,_|_| |_|\__,_|" . PHP_EOL;
+             "   |_| \__,_|_|\_\__,_|_| |_|\__,_|" . PHP_EOL . PHP_EOL;
     }
 }
