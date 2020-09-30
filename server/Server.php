@@ -56,7 +56,7 @@ class Server implements MessageComponentInterface
         $numRecv = count($this->clients) - 1;
 
         $packet = new DingPacket();
-        $packet->setBuffer($context);
+        $packet->setBuffer(base64_decode($context));
         $packet->decode();
         $this->handlePacket($packet);
 
