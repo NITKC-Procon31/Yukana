@@ -48,7 +48,7 @@ class Server implements MessageComponentInterface
     {
         $this->clients->attach($conn);
 
-		Log::info("{$conn->resourceId} がサーバに接続しました。");
+        Log::info("{$conn->resourceId} がサーバに接続しました。");
     }
 
     public function onMessage(ConnectionInterface $from, $context)
@@ -69,12 +69,12 @@ class Server implements MessageComponentInterface
     {
         $this->clients->detach($conn);
 
-		Log::info("{$conn->resourceId} がサーバから切断しました。");
+        Log::info("{$conn->resourceId} がサーバから切断しました。");
     }
 
     public function onError(ConnectionInterface $conn, \Throwable $e)
     {
-		Log::error("不明なエラーが発生しました : {$e->getMessage()}");
+        Log::error("不明なエラーが発生しました : {$e->getMessage()}");
 
         $conn->close();
     }
@@ -92,7 +92,7 @@ class Server implements MessageComponentInterface
         if ($packet->getType() === PacketType::TYPE_DING) {
             switch ($packet->getId()) {
                 default:
-					Log::warning("不明なパケットを受信 (" . dechex($packet->getId()) . ")");
+                    Log::warning("不明なパケットを受信 (" . dechex($packet->getId()) . ")");
                     break;
             }
         }
