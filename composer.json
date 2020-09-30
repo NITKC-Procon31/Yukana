@@ -8,12 +8,16 @@
             "email": "towa.towa0131@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "cboden/ratchet": "v0.5.x-dev"
+    },
     "autoload": {
         "psr-4": {
             "yukana\\DingDong\\packets\\": "packets/",
             "yukana\\DingDong\\utils\\": "utils/",
-            "yukana\\DingDong\\network\\": "network/"
+            "yukana\\DingDong\\network\\": "network/",
+            "yukana\\DingDong\\server\\": "server/",
+            "yukana\\DingDong\\client\\": "client/"
         }
     }
 }

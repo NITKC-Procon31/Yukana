@@ -1,117 +1,111 @@
 <?php
 
+declare(ticks = 1);
+
 namespace yukana\DingDong\server;
 
 use yukana\DingDong\packets\Packet;
 use yukana\DingDong\packets\DingPacket;
 use yukana\DingDong\packets\DongPacket;
 
-use yukana\DingDong\packets\protocol\CreateSessionAcceptPacket;
-use yukana\DingDong\packets\protocol\CreateSessionRequestPacket;
 use yukana\DingDong\packets\protocol\DataPacket;
 use yukana\DingDong\packets\protocol\PacketPool;
 use yukana\DingDong\packets\protocol\PacketType;
 
 use yukana\DingDong\utils\Address;
+use yukana\DingDong\utils\Log;
 
-use yukana\DingDong\network\SessionBuilder;
+use Ratchet\MessageComponentInterface;
+use Ratchet\ConnectionInterface;
 
-class Server
+use Ratchet\App;
+
+use Ratchet\Http\HttpServer;
+use Ratchet\WebSocket\WsServer;
+use Ratchet\Server\IoServer;
+
+require_once __DIR__ . "/../vendor/autoload.php";
+
+class Server implements MessageComponentInterface
 {
-	private $ipaddress;
-	private $port;
+    protected $clients;
 
-	private $socket;
-	private $remote;
+    private $socket;
+    private $remote;
 
-	public function __construct(string $ipaddress, int $port)
-	{
-		require_once __DIR__ . "/../vendor/autoload.php";
+    public function __construct()
+    {
+        Log::showLogo();
+        Log::info("サーバを起動しています...");
+        $this->clients = new \SplObjectStorage;
 
-		$this->ipaddress = $ipaddress;
-		$this->port = $port;
+        PacketPool::registerPackets();
 
-		PacketPool::registerPackets();
-	}
+        Log::success("サーバが正常に起動しました！");
+    }
 
-	public function listen(): void
-	{
-		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		if ($this->socket === false) {
-			echo " - Error : Couldn't create socket" . PHP_EOL;
-			exit(1);
-		}
-		socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
+    public function onOpen(ConnectionInterface $conn)
+    {
+        $this->clients->attach($conn);
 
-		if (@socket_bind($this->socket, $this->ipaddress, $this->port) === false) {
-			echo " - Error : Failed to bind " . $this->ipaddress . ":" . $this->port . PHP_EOL;
-			exit(1);
-		}
+		Log::info("{$conn->resourceId} がサーバに接続しました。");
+    }
 
-		if (@socket_listen($this->socket) === false) {
-			echo " - Error : Failed to listen " . $this->ipaddress . ":" . $this->port . PHP_EOL;
-			exit(1);
-		}
-		echo " - Listening packets..." . PHP_EOL;
-	}
+    public function onMessage(ConnectionInterface $from, $context)
+    {
+        $numRecv = count($this->clients) - 1;
 
-	public function run(): void
-	{
-		while ($this->remote = socket_accept($this->socket)) {
-			while ($context = socket_read($this->remote, 1024 ^ 2 * 5)) {
-				$packet = new DingPacket();
-				$packet->setBuffer($context);
-				$packet->decode();
-				$this->handlePacket($packet);
-			}
-		}
-	}
+        $packet = new DingPacket();
+        $packet->setBuffer($context);
+        $packet->decode();
+        $this->handlePacket($packet);
 
-	private function handlePacket(Packet $packet): void
-	{
-		$packets = $packet->getDataPackets();
-		foreach ($packets as $dataPacket) {
-			$this->handleDataPacket($dataPacket);
-		}
-	}
+        foreach ($this->clients as $client) {
+            $client->send("Hello!");
+        }
+    }
 
-	private function handleDataPacket(DataPacket $packet): void
-	{
-		if ($packet->getType() === PacketType::TYPE_DING) {
-			switch ($packet->getId()) {
-				case PacketType::PACKET_CREATE_SESSION_REQUEST:
-					$address = new Address($packet->getAddress(), $packet->getPort());
-					echo " - Request received from " . $packet->getAddress() . PHP_EOL;
-					echo "====== INFO =====================" . PHP_EOL;
-					echo " * IP Address : " . $address->getAddress() . PHP_EOL;
-					echo " * Port : " . $address->getPort() . PHP_EOL;
-					echo " * Name : " . $packet->getClientName() . PHP_EOL;
-					echo "=================================" . PHP_EOL;
-					$id = SessionBuilder::createNewSession($address, $packet->getClientName());
+    public function onClose(ConnectionInterface $conn)
+    {
+        $this->clients->detach($conn);
 
-					$packet = new DongPacket();
-					$packet->addDataPacket(new CreateSessionAcceptPacket($id));
-					$packet->encode();
-					$this->send($packet);
-					break;
-				default:
-					echo " - Unknown packet received" . PHP_EOL;
-					break;
-			}
-		}
-	}
+		Log::info("{$conn->resourceId} がサーバから切断しました。");
+    }
 
-	private function send(DongPacket $packet): void
-	{
-		$buffer = $packet->getBuffer();
-		if (socket_write($this->remote, $buffer, strlen($buffer)) === false) {
-			echo " - Failed." . PHP_EOL;
-		} else {
-			echo " - Successful! > " . strlen($buffer) . "bytes" . PHP_EOL;
-		}
-	}
+    public function onError(ConnectionInterface $conn, \Throwable $e)
+    {
+		Log::error("不明なエラーが発生しました : {$e->getMessage()}");
+
+        $conn->close();
+    }
+
+    private function handlePacket(Packet $packet): void
+    {
+        $packets = $packet->getDataPackets();
+        foreach ($packets as $dataPacket) {
+            $this->handleDataPacket($dataPacket);
+        }
+    }
+
+    private function handleDataPacket(DataPacket $packet): void
+    {
+        if ($packet->getType() === PacketType::TYPE_DING) {
+            switch ($packet->getId()) {
+                default:
+					Log::warning("不明なパケットを受信 (" . dechex($packet->getId()) . ")");
+                    break;
+            }
+        }
+    }
 }
 
-$client = new Server("0.0.0.0", 8080);
-$client->listen();
-$client->run();
+$server = IoServer::factory(
+    new HttpServer(
+        new WsServer(
+            new Server()
+            )
+        ),
+    37564
+);
+
+$server->run();

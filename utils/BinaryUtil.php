@@ -4,53 +4,93 @@ namespace yukana\DingDong\utils;
 
 class BinaryUtil
 {
-	public static function signInt(int $value): int
-	{
-		return $value << 32 >> 32;
-	}
+    public static function signInt8(int $value): int
+    {
+        return $value << 56 >> 56;
+    }
 
-	public static function writeInt(int $value): string
-	{
-		return pack("V", $value);
-	}
+    public static function unsignInt8(int $value): int
+    {
+        return $value & 0xff;
+    }
 
-	public static function readInt(string $string): int
-	{
-		return self::signInt(unpack("V", $string)[1]);
-	}
+    public static function signInt16(int $value): int
+    {
+        return $value << 48 >> 48;
+    }
 
-	public static function writeUnsignedVarInt(int $value): string
-	{
-		$buffer = "";
-		$value &= 0xffffffff;
+    public static function unsignInt16(int $value): int
+    {
+        return $value & 0xffff;
+    }
 
-		for ($i = 0; $i < 5; ++$i) {
-			if (($value >> 7) !== 0) {
-				$buffer .= chr($value | 0x80);
-			} else {
-				$buffer .= chr($value & 0x7f);
-				return $buffer;
-			}
-			$value = (($value >> 7) & (PHP_INT_MAX >> 6));
-		}
+    public static function signInt32(int $value): int
+    {
+        return $value << 32 >> 32;
+    }
 
-		throw new \InvalidArgumentException("Value too large to be encoded as a VarInt");
-	}
+    public static function unsignInt32(int $value): int
+    {
+        return $value & 0xffffff;
+    }
 
-	public static function readUnsignedVarInt(string $buffer, int &$offset): int
-	{
-		$value = 0;
+    public static function writeUint8(int $value): string
+    {
+        return pack("C", $value);
+    }
 
-		for ($i = 0; $i <= 35; $i += 7) {
-			$b = ord($buffer{$offset++});
-			$value |= (($b & 0x7f) << $i);
-			if (($b & 0x80) === 0) {
-				return $value;
-			} elseif (!isset($buffer{$offset})) {
-				throw new \UnexpectedValueException("Expected more bytes, none left to read");
-			}
-		}
+    public static function writeUint16(int $value): string
+    {
+        return pack("n", $value);
+    }
 
-		throw new \InvalidArgumentException("VarInt did not terminate after 5 bytes!");
-	}
+    public static function writeUint32(int $value): string
+    {
+        return pack("N", $value);
+    }
+
+    public static function readUint8(string $string): int
+    {
+        return unpack("C", $string)[1];
+    }
+
+    public static function readUint16(string $string): int
+    {
+        return unpack("n", $string)[1];
+    }
+
+    public static function readUint32(string $string): int
+    {
+        return unpack("N", $string)[1];
+    }
+
+    public static function writeInt8(int $value): string
+    {
+        return self::writeUint8($value);
+    }
+
+    public static function writeInt16(int $value): string
+    {
+        return self::writeUint16($value);
+    }
+
+    public static function writeInt32(int $value): string
+    {
+        return self::writeUint32($value);
+    }
+
+    public static function readInt8(string $string): int
+    {
+        return self::signInt8(self::readUint8($string));
+    }
+
+    public static function readInt16(string $string): int
+    {
+        return self::signInt16(self::readUint16($string));
+    }
+
+    public static function readInt32(string $string): int
+    {
+        return self::signInt32(self::readUint32($string));
+    }
 }
