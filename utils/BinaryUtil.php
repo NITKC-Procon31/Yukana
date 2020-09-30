@@ -36,7 +36,7 @@ class BinaryUtil
 
     public static function writeUint8(int $value): string
     {
-        return pack("C", $value);
+        return chr($value);
     }
 
     public static function writeUint16(int $value): string
@@ -49,9 +49,9 @@ class BinaryUtil
         return pack("N", $value);
     }
 
-    public static function readUint8(string $string): int
+    public static function readUint8(string $c): int
     {
-        return unpack("C", $string)[1];
+        return ord($c[0]);
     }
 
     public static function readUint16(string $string): int

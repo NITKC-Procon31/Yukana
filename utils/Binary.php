@@ -123,7 +123,7 @@ class Binary
         $array = unpack("C*", $string);
         $this->putUnsignedShort(count($array));
         foreach ($array as $value) {
-            $this->putShort($value);
+            $this->putUnsignedShort($value);
         }
     }
 
@@ -133,7 +133,7 @@ class Binary
         $str = "";
 
         for ($i = 0; $i < $count; $i++) {
-            $str .= pack("C", $this->getShort());
+            $str .= pack("C", $this->getUnsignedShort());
         }
 
         return $str;
