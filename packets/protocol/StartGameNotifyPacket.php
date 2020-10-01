@@ -26,7 +26,7 @@ class StartGameNotifyPacket extends DataPacket
 
     public function getId(): int
     {
-        return PacketType::PACKET_START_GAME;
+        return PacketType::PACKET_START_GAME_NOTIFY;
     }
 
     public function getName(): string

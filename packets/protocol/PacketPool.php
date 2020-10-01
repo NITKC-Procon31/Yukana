@@ -49,7 +49,7 @@ class PacketPool
         self::registerPacket(SendColorPacket::class, PacketType::PACKET_SEND_COLOR);
         self::registerPacket(ColorNotifyPacket::class, PacketType::PACKET_COLOR_NOTIFY);
         self::registerPacket(CorrectAnswerPacket::class, PacketType::PACKET_CORRECT_ANSWER);
-        self::registerPacket(StartGamePacket::class, PacketType::PACKET_START_GAME);
+        self::registerPacket(StartGamePacket::class, PacketType::PACKET_START_GAME_NOTIFY);
         self::registerPacket(TimeOutNotify::class, PacketType::PACKET_TIMEOUT_NOTIFY);
     }
 }
