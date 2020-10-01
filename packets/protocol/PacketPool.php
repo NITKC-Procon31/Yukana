@@ -19,7 +19,7 @@ use yukana\DingDong\packets\protocol\TimeOutNotify;
 
 use yukana\DingDong\utils\Log;
 
-class PacketPool implements PacketType
+class PacketPool
 {
     private static $packets = [];
 
