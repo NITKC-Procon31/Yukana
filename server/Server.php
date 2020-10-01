@@ -26,6 +26,8 @@ use Ratchet\Server\IoServer;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
+define("DEBUG", true);
+
 class Server implements MessageComponentInterface
 {
     protected $clients;

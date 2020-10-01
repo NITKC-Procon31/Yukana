@@ -50,6 +50,13 @@ class Log
         echo self::COLOR_YELLOW . "[W] " . $msg . self::FORMAT_RESET . PHP_EOL;
     }
 
+    public static function debug(string $msg): void
+    {
+        if (DEBUG) {
+            echo self::COLOR_GRAY . "[D] " . $msg . self::FORMAT_RESET . PHP_EOL;
+        }
+    }
+
     public static function showLogo(): void
     {
         echo "__     __    _                     " . PHP_EOL .
