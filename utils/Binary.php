@@ -139,6 +139,16 @@ class Binary
         return $str;
     }
 
+    public function putBool(bool $bool): void
+    {
+        $this->putUnsignedByte($bool);
+    }
+
+    public function getBool(): bool
+    {
+        return $this->getUnsignedByte();
+    }
+
     public function getLength(): int
     {
         return strlen($this->buffer);
