@@ -5,7 +5,7 @@ namespace yukana\DingDong\packets\protocol;
 use yukana\DingDong\packets\protocol\DataPacket;
 use yukana\DingDong\packets\protocol\PacketType;
 
-use yukana\DingDong\packets\exception\InvaliedRoleException;
+use yukana\DingDong\packets\exception\InvalidRoleException;
 
 class SetRolePacket extends DataPacket
 {
@@ -13,7 +13,11 @@ class SetRolePacket extends DataPacket
 
     public function __construct(int $role = 0)
     {
-        $this->role = $role;
+        if (0 <= $role && $role <= 1) {
+            $this->role = $role;
+        } else {
+            throw new InvalidRoleException("Invalid role {$role}");
+        }
     }
 
     public function getRole(): int
@@ -26,7 +30,7 @@ class SetRolePacket extends DataPacket
         if (0 <= $role && $role <= 1) {
             $this->role = $role;
         } else {
-            throw new InvaliedRoleException("Invalied role {$role}");
+            throw new InvalidRoleException("Invalid role {$role}");
         }
     }
 

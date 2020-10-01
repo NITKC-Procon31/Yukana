@@ -7,7 +7,7 @@ use yukana\DingDong\utils\Binary;
 use yukana\DingDong\packets\protocol\DataPacket;
 use yukana\DingDong\packets\protocol\PacketPool;
 
-use yukana\DingDong\packets\exception\InvaliedPacketException;
+use yukana\DingDong\packets\exception\InvalidPacketException;
 
 abstract class Packet extends Binary
 {
@@ -47,7 +47,7 @@ abstract class Packet extends Binary
         $this->isEncoded = false;
         foreach (self::NUM_MAGIC as $magic) {
             if ($this->getUnsignedByte() !== $magic) {
-                throw new InvaliedPacketException("Invalied Packet Received");
+                throw new InvalidPacketException("Invalied Packet Received");
             }
         }
 

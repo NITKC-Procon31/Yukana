@@ -2,7 +2,7 @@
 
 namespace yukana\DingDong\utils;
 
-use yukana\DingDong\packets\exception;
+use yukana\DingDong\packets\exception\InvalidAddressException;
 
 class Address
 {
@@ -12,7 +12,7 @@ class Address
     public function __construct(string $ipaddress, int $port)
     {
         if ($this->isValied($ipaddress) === false) {
-            throw new InvaliedAddressException("Invalied format of ip address");
+            throw new InvalidAddressException("Invalied format of ip address");
         }
 
         $this->ipaddress = $ipaddress;
