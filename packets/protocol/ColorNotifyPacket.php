@@ -5,25 +5,23 @@ namespace yukana\DingDong\packets\protocol;
 use yukana\DingDong\packets\protocol\DataPacket;
 use yukana\DingDong\packets\protocol\PacketType;
 
-use yukana\DingDong\utils\Color;
-
 class ColorNotifyPacket extends DataPacket
 {
-    private $color;
+    private $colorId;
 
-    public function __construct(Color $color)
+    public function __construct(int $id = 0)
     {
-        $this->color = $color;
+        $this->colorId = $id;
     }
 
-    public function getColor(): Color
+    public function getColorId(): int
     {
-        return $this->color;
+        return $this->colorId;
     }
 
-    public function setColor(Color $color): void
+    public function setColorId(int $id): void
     {
-        $this->color = $color;
+        $this->colorId = $id;
     }
 
     public function getId(): int
@@ -44,20 +42,12 @@ class ColorNotifyPacket extends DataPacket
     public function encode(): void
     {
         parent::encode();
-        $this->putUnsignedByte(3);
-        foreach ($this->color->toArray() as $color) {
-            $this->putUnsignedByte($color);
-        }
+        $this->putUnsignedShort($this->colorId);
     }
 
     public function decode(): void
     {
         parent::decode();
-        $count = $this->getUnsignedByte();
-        $color = [];
-        while ($count--) {
-            $color[] = $this->getUnsignedByte();
-        }
-        $this->color = Color::fromArray($color);
+        $this->colorId = $this->getUnsignedShort();
     }
 }

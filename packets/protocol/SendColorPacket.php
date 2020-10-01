@@ -9,21 +9,21 @@ use yukana\DingDong\utils\Color;
 
 class SendColorPacket extends DataPacket
 {
-    private $color;
+    private $colorId;
 
-    public function __construct(Color $color = null)
+    public function __construct(int $id = 0)
     {
-        $this->color = $color;
+        $this->colorId = $id;
     }
 
-    public function getColor(): Color
+    public function getColorId(): int
     {
-        return $this->color;
+        return $this->colorId;
     }
 
-    public function setColor(Color $color): void
+    public function setColorId(int $id): void
     {
-        $this->color = $color;
+        $this->colorId = $id;
     }
 
     public function getId(): int
@@ -44,20 +44,12 @@ class SendColorPacket extends DataPacket
     public function encode(): void
     {
         parent::encode();
-        $this->putUnsignedByte(3);
-        foreach ($this->color->toArray() as $color) {
-            $this->putUnsignedByte($color);
-        }
+        $this->putUnsignedShort($this->colorId);
     }
 
     public function decode(): void
     {
         parent::decode();
-        $count = $this->getUnsignedByte();
-        $color = [];
-        while ($count--) {
-            $this->color[] = $this->getUnsignedByte();
-        }
-        $this->color = Color::fromArray($color);
+        $this->colorId = $this->getUnsignedShort();
     }
 }
