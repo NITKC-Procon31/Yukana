@@ -1,7 +1,5 @@
 <?php
 
-declare(ticks = 1);
-
 namespace yukana\DingDong\server;
 
 use yukana\DingDong\packets\Packet;
