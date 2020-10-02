@@ -13,11 +13,10 @@
     },
     "autoload": {
         "psr-4": {
-            "yukana\\DingDong\\packets\\": "packets/",
-            "yukana\\DingDong\\utils\\": "utils/",
-            "yukana\\DingDong\\network\\": "network/",
-            "yukana\\DingDong\\server\\": "server/",
-            "yukana\\DingDong\\client\\": "client/"
+            "yukana\\DingDong\\": "src/",
+            "yukana\\DingDong\\packets\\": "src/packets/",
+            "yukana\\DingDong\\utils\\": "src/utils/",
+            "yukana\\DingDong\\network\\": "src/network/"
         }
     }
 }

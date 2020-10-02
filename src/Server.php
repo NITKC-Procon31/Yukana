@@ -1,6 +1,6 @@
 <?php
 
-namespace yukana\DingDong\server;
+namespace yukana\DingDong;
 
 use yukana\DingDong\packets\Packet;
 use yukana\DingDong\packets\DingPacket;
@@ -17,14 +17,6 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
 use Ratchet\App;
-
-use Ratchet\Http\HttpServer;
-use Ratchet\WebSocket\WsServer;
-use Ratchet\Server\IoServer;
-
-require_once __DIR__ . "/../vendor/autoload.php";
-
-define("DEBUG", true);
 
 class Server implements MessageComponentInterface
 {
@@ -98,14 +90,3 @@ class Server implements MessageComponentInterface
         }
     }
 }
-
-$server = IoServer::factory(
-    new HttpServer(
-        new WsServer(
-            new Server()
-            )
-        ),
-    37564
-);
-
-$server->run();
