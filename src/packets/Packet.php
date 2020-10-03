@@ -38,7 +38,7 @@ abstract class Packet extends Binary
         $this->putUnsignedByte(count($this->dataPackets));
         foreach ($this->dataPackets as $dataPacket) {
             $dataPacket->encode();
-            $this->putString($dataPacket->getBuffer());
+            $this->putPacket($dataPacket);
         }
     }
 
@@ -53,11 +53,7 @@ abstract class Packet extends Binary
 
         $pieces = $this->getUnsignedByte();
         for ($i = $pieces; $i > 0; $i--) {
-            $buffer = $this->getString();
-            $id = ord($buffer{0});
-            $class = PacketPool::getPacketFromId($id);
-            $packet = new $class;
-            $packet->setBuffer($buffer);
+            $packet = $this->getPacket();
             $packet->decode();
             $this->dataPackets[] = $packet;
         }

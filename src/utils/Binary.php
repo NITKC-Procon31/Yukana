@@ -4,6 +4,9 @@ namespace yukana\DingDong\utils;
 
 use yukana\DingDong\utils\BinaryUtil;
 
+use yukana\DingDong\packets\protocol\DataPacket;
+use yukana\DingDong\packets\protocol\PacketPool;
+
 class Binary
 {
     private $buffer;
@@ -137,6 +140,30 @@ class Binary
         }
 
         return $str;
+    }
+
+    public function putPacket(DataPacket $packet): void
+    {
+        $length = $packet->getLength();
+        $this->putUnsignedShort($length);
+        while ($length--) {
+            $this->putUnsignedByte($packet->getUnsignedByte());
+        }
+    }
+
+    public function getPacket(): DataPacket
+    {
+        $length = $this->getUnsignedShort();
+        $binary = new Binary();
+        for ($i = 0; $i < $length; $i++) {
+            $binary->putUnsignedByte($this->getUnsignedByte());
+        }
+        $id = $binary->getInt();
+        $class = PacketPool::getPacketFromId($id);
+        $packet = new $class;
+        $packet->setBuffer($binary->getBuffer());
+
+        return $packet;
     }
 
     public function putBool(bool $bool): void
